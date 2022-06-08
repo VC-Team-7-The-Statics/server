@@ -3,9 +3,15 @@ class UserService {
     this.userModel = userModel;
   }
 
-  async FindUser(query) {
-    return await this.userModel.findOne(query).lean();
-  }
+  FindUser = async (query) => await this.userModel.findOne(query).lean();
+
+  FindUserWithPassword = async (query) =>
+    await this.userModel.findOne(query).select("password").lean();
+
+  ValidatePassword = async (password) =>
+    await this.userModel.matchPassword(password);
+
+  RegisterUser = async (query) => await this.userModel.create(query);
 }
 
 module.exports = UserService;
