@@ -1,5 +1,5 @@
 const passport = require("passport");
-const User = require("../models.js/User");
+const User = require("../models/User");
 const secrets = require("./secrets");
 const UserService = require("../services/UserService");
 

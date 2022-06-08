@@ -1,8 +1,10 @@
 const { default: mongoose } = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
+    minlength: [6, "최소 6 자리 이상입니다."],
     unique: [true, "중복된 이름입니다."],
     required: [true, "이름을 입력해 주세요."],
   },
@@ -27,8 +29,9 @@ const UserSchema = new mongoose.Schema({
   },
   language: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Laguage",
+    ref: "Language",
   },
+  stack: [String],
   expertise: String,
   price: {
     type: Number,
@@ -69,5 +72,15 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.set("timestamps", true);
+
+UserSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model("User", UserSchema);
