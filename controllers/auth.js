@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-const fs = require("fs");
 const AWS = require("aws-sdk");
 const asyncCatcher = require("../utils/asyncCatcher");
 const generateJWT = require("../utils/generateJWT");
@@ -19,15 +18,13 @@ exports.logIn = asyncCatcher(async (req, res, next) => {
   const isLoginWithBody = Object.keys(req.body).includes("email");
 
   if (isLoginWithBody) {
-    const { email } = req.body;
+    const { email, password } = req.body;
 
     const user = await UserInstance.FindUserWithPassword({ email });
 
     if (!user) return next(new ErrorResponse("unauthorized"));
 
-    const isPasswordCorrect = await UserInstance.ValidatePassword(
-      user.password
-    );
+    const isPasswordCorrect = await user.matchPassword(password);
 
     if (!isPasswordCorrect) return next(new ErrorResponse("wrong password"));
 
@@ -37,7 +34,7 @@ exports.logIn = asyncCatcher(async (req, res, next) => {
   }
 
   if (!req.user) {
-    return next(new ErrorResponse("unauthorized"));
+    return next(new ErrorResponse("invalid token"));
   }
 
   const token = await generateJWT(req.user.email);
@@ -50,9 +47,8 @@ exports.signup = asyncCatcher(async (req, res, next) => {
     name,
     email,
     password,
-    conpany,
-    language,
-    stack,
+    company,
+    languages,
     expertise,
     price,
     base64,
@@ -64,18 +60,24 @@ exports.signup = asyncCatcher(async (req, res, next) => {
   const { Location: S3_Location } = await s3
     .upload({
       Bucket: secrets.AWS_S3_BUCKET_NAME,
+      // Key 값은 테스팅이 끝나면 유저의 이메일로 변경해야 합니다.
       Key: `${Date.now()}.jpg`,
       Body: imageBuffer,
       ContentType: "image/jpeg",
     })
     .promise();
 
+  const formattedLanguages = Object.entries(languages).map((entry) => ({
+    name: entry[0],
+    stacks: entry[1],
+  }));
+
   const userCredential = {
     name,
     email,
     password,
-    conpany,
-    language,
+    company,
+    languages: formattedLanguages,
     expertise,
     price,
     location: {
@@ -85,12 +87,8 @@ exports.signup = asyncCatcher(async (req, res, next) => {
     image: S3_Location,
   };
 
-  if (stack) {
-    userCredential.stack = stack;
-  }
-
   const registeredUser = await UserInstance.RegisterUser(userCredential);
-  const token = generateJWT(email);
+  const token = await generateJWT(email);
 
   res.json({ success: true, token, user: registeredUser });
 });

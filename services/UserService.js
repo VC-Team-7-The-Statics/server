@@ -6,7 +6,7 @@ class UserService {
   FindUser = async (query) => await this.userModel.findOne(query).lean();
 
   FindUserWithPassword = async (query) =>
-    await this.userModel.findOne(query).select("password").lean();
+    await this.userModel.findOne(query).select("+password");
 
   ValidatePassword = async (password) =>
     await this.userModel.matchPassword(password);
