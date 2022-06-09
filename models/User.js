@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: [6, "최소 6 자리 이상입니다."],
+    minlength: [1, "최소 6 자리 이상입니다."],
     unique: [true, "중복된 이름입니다."],
     required: [true, "이름을 입력해 주세요."],
   },
@@ -27,11 +27,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "사진을 첨부해 주세요."],
   },
-  language: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Language",
-  },
-  stack: [String],
+  languages: [
+    {
+      name: String,
+      stacks: [String],
+    },
+  ],
   expertise: String,
   price: {
     type: Number,
