@@ -34,3 +34,23 @@ exports.recommendUser = asyncCatcher(async (req, res, next) => {
 
   res.json({ success: true, recommendation: users, page, isLastPage });
 });
+
+exports.getCoffeePrice = asyncCatcher(async (req, res, next) => {
+  const { userId } = req.params;
+
+  const { price, name } = await User.findById(userId).select("name price");
+
+  res.json({ success: true, price, name });
+});
+
+exports.likeUser = asyncCatcher(async (req, res, next) => {
+  const { from, to } = req.body;
+
+  const me = await User.findById(req.body.from);
+  const you = await User.findById(req.body.to);
+
+  console.log("from", me.name);
+  console.log("to", you.name);
+
+  res.json({ success: true });
+});
