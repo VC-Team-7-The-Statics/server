@@ -39,6 +39,11 @@ exports.logIn = asyncCatcher(async (req, res, next) => {
 
   const token = await generateJWT(req.user.email);
 
+  // FIX ME: 진욱 작업 - 좋아요한 유저 이미지를 추출하기 위해 작성한 코드입니다. 현재 조회할 유저 id를 임의로 작성한 상태라 해당 코드 변경이 필요합니다.ㅈㅂ
+  const resultOnDemand = await User.find({
+    _id: { $in: ["62a13f789b2ff58829c6b587", "62a14f589b2ff58829c6b5ae"] },
+  }).select("image");
+
   return res.json({ success: true, token, user: req.user });
 });
 

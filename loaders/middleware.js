@@ -5,6 +5,7 @@ const passport = require("../config/passport");
 const checkJWT = require("../middlewares/checkJWT");
 const authRouter = require("../routes/auth");
 const userRouter = require("../routes/user");
+const indexRouter = require("../routes/index");
 const errorHandler = require("../middlewares/errorHandler");
 
 const initiateMiddlewares = (app) => {
@@ -21,6 +22,7 @@ const initiateMiddlewares = (app) => {
   app.use(passport.initialize());
   app.use(checkJWT);
 
+  app.use("/", indexRouter);
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
 
