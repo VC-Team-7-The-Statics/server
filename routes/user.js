@@ -10,7 +10,7 @@ const router = require("express")();
 
 router.route("/like").post(protect, likeUser);
 
-router.route("/:userId").get(protect, getProfileInfo);
+router.route("/profile").get(protect, getProfileInfo);
 
 router.route("/:userId/recommend").get(protect, recommendUser);
 

@@ -11,7 +11,14 @@ const errorHandler = require("../middlewares/errorHandler");
 const initiateMiddlewares = (app) => {
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+        "https://preeminent-licorice-96005b.netlify.app",
+        "https://cosmic-semolina-b6e8c3.netlify.app",
+        "https://shiny-druid-4172be.netlify.app",
+      ],
       methods: ["GET", "POST"],
     })
   );
