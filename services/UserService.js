@@ -65,7 +65,7 @@ class UserService {
         path: "likes",
         select: "name image",
       })
-      .select("name email image likes match incomingRequest");
+      .select("name email company image likes match incomingRequest");
 
     return populatedProfile;
   };
