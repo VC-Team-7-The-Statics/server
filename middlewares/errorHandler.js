@@ -3,9 +3,12 @@ const errorHandler = (err, req, res, next) => {
   console.log("Error Name -> ", err.name);
   console.log("Error Message -> ", err.message);
   switch (err.name) {
+    case "JsonWebTokenError":
     case "unauthorized":
     case "invalid token":
-      return res.status(200).json({ success: false, message: err.name });
+      return res
+        .status(200)
+        .json({ success: false, message: "unauthorized access" });
 
     case "MongoServerError":
       return res

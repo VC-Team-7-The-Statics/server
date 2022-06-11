@@ -60,3 +60,11 @@ exports.likeUser = asyncCatcher(async (req, res, next) => {
 
   res.json({ success: true });
 });
+
+exports.getProfileInfo = asyncCatcher(async (req, res, next) => {
+  const { email } = req.user;
+
+  const populatedProfile = await UserInstance.GetPopulatedProfile({ email });
+
+  res.json({ success: true, profile: populatedProfile });
+});
