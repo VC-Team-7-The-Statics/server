@@ -48,6 +48,27 @@ class UserService {
       $addToSet: { incomingCoffeeRequest: coffeeFormId },
     });
   };
+
+  GetPopulatedProfile = async (query) => {
+    const populatedProfile = await this.userModel
+      .findOne(query)
+      .populate({
+        path: "match",
+        populate: { path: "couple", select: "name image" },
+      })
+      .populate({
+        path: "incomingCoffeeRequest",
+        populate: { path: "from", select: "name company" },
+        select: "title content accepted",
+      })
+      .populate({
+        path: "likes",
+        select: "name image",
+      })
+      .select("likes match incomingRequest");
+
+    return populatedProfile;
+  };
 }
 
 module.exports = UserService;
