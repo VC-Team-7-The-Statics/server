@@ -7,4 +7,6 @@ router.route("/coffee-form").post(protect, submitCoffeeRequest);
 
 router.route("/languages").get(protect, getLanguages);
 
+router.route("/").get((_, res) => res.json({ success: true }));
+
 module.exports = router;
