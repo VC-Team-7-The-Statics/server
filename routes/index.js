@@ -1,8 +1,8 @@
-const { submit, getLanguages } = require("../controllers/index");
+const { submitCoffeeRequest, getLanguages } = require("../controllers/index");
 
 const router = require("express")();
 
-router.route("/coffee-form").post(submit);
+router.route("/coffee-form").post(submitCoffeeRequest);
 
 router.route("/languages").get(getLanguages);
 

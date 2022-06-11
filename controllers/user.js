@@ -50,7 +50,9 @@ exports.likeUser = asyncCatcher(async (req, res, next) => {
 
   const you = await UserInstance.AddUserInMyLikesField(myId, yourId);
 
-  if (you.likes.includes(myId)) {
+  const yourLikes = you.likes.map((id) => id.toString());
+
+  if (yourLikes.includes(myId)) {
     const match = await MatchInstance.CreateMatch(myId, yourId);
 
     await UserInstance.AddMatchToBothUsers(myId, yourId, match._id);

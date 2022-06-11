@@ -47,13 +47,13 @@ const UserSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Match",
   },
-  viewed: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "User",
-  },
   chatroom: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Chatroom",
+  },
+  incomingCoffeeRequest: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "CoffeeForm",
   },
   location: {
     type: {
