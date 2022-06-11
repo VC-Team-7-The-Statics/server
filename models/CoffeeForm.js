@@ -21,7 +21,7 @@ const CoffeeFormSchema = new mongoose.Schema({
   },
   accepted: {
     type: Boolean,
-    required: [true, "상태를 입력해 주세요."],
+    default: false,
   },
 });
 

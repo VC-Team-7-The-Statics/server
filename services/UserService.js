@@ -42,6 +42,12 @@ class UserService {
 
     return { users, totalMatchingUsers };
   };
+
+  AddCoffeeRequestToReceiver = async (receiverId, coffeeFormId) => {
+    await this.userModel.findByIdAndUpdate(receiverId, {
+      $addToSet: { incomingCoffeeRequest: coffeeFormId },
+    });
+  };
 }
 
 module.exports = UserService;

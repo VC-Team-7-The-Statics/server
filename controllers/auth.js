@@ -60,8 +60,7 @@ exports.signup = asyncCatcher(async (req, res, next) => {
   const { Location: S3_Location } = await s3
     .upload({
       Bucket: secrets.AWS_S3_BUCKET_NAME,
-      // Key 값은 테스팅이 끝나면 유저의 이메일로 변경해야 합니다.
-      Key: `${Date.now()}.jpg`,
+      Key: `${email}.jpg`,
       Body: imageBuffer,
       ContentType: "image/jpeg",
     })
