@@ -15,12 +15,19 @@ const ChatRoomSchema = new mongoose.Schema({
   attendants: {
     type: [mongoose.Schema.Types.ObjectId],
     required: [true, "참가자는 두 명이어야 합니다."],
+    ref: "User",
   },
   chats: [ChatSchema],
-  count: {
-    type: Number,
-    default: 0,
-  },
+});
+
+ChatRoomSchema.virtual("lastChat").get(function () {
+  const lastIndex = this.chats.length - 1;
+
+  return this.chats[lastIndex];
+});
+
+ChatRoomSchema.virtual("count").get(function () {
+  return this.chats.length;
 });
 
 module.exports = mongoose.model("ChatRoom", ChatRoomSchema);

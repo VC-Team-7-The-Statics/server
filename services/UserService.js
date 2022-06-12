@@ -76,6 +76,26 @@ class UserService {
       { $addToSet: { chatroom: roomId } }
     );
   };
+
+  GetAllChatRoomsOfUser = async (userId) => {
+    return await this.userModel
+      .findById(userId)
+      .populate({
+        path: "chatroom",
+        select: "attendants",
+      })
+      .select("chatroom");
+  };
+
+  GetAllChatRoomListOfUser = async (userId) =>
+    await this.userModel
+      .findById(userId)
+      .populate({
+        path: "chatroom",
+        select: "attendants",
+        populate: { path: "attendants", select: "name image" },
+      })
+      .select("chatroom");
 }
 
 module.exports = UserService;
