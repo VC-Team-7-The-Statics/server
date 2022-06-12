@@ -5,6 +5,7 @@ const User = require("../models/User");
 const ChatRoomService = require("../services/ChatRoomService");
 const UserService = require("../services/UserService");
 const asyncCatcher = require("../utils/asyncCatcher");
+const ErrorResponse = require("../utils/ErrorResponse");
 const {
   duplicateChatroomChecker,
   filterOutUserFromAttendants,
@@ -55,4 +56,19 @@ exports.getAllChatRooms = asyncCatcher(async (req, res, next) => {
     image,
     id: userId,
   });
+});
+
+exports.visitChatRoom = asyncCatcher(async (req, res, next) => {
+  const { userId, roomId } = req.params;
+
+  if (
+    !mongoose.Types.ObjectId.isValid(userId) ||
+    !mongoose.Types.ObjectId.isValid(roomId)
+  ) {
+    return next(new ErrorResponse("unauthorized"));
+  }
+
+  const { chats } = await ChatRoomInstance.GetChatHistory(roomId);
+
+  res.json({ success: true, chats });
 });

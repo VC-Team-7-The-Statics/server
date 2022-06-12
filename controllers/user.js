@@ -32,7 +32,8 @@ exports.recommendUser = asyncCatcher(async (req, res, next) => {
   const { users, totalMatchingUsers } =
     await UserInstance.RecommendMatchingUsers(query, usersPerRequest, page);
 
-  const isLastPage = page + 1 === totalMatchingUsers;
+  const isLastPage =
+    (page === 0 && totalMatchingUsers === 0) || page + 1 === totalMatchingUsers;
 
   res.json({ success: true, recommendation: users, page, isLastPage });
 });
