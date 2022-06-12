@@ -5,6 +5,8 @@ const router = require("express")();
 
 router.route("/coffee-form").post(protect, submitCoffeeRequest);
 
-router.route("/languages").get(protect, getLanguages);
+router.route("/languages").get(getLanguages);
+
+router.route("/").get((_, res) => res.json({ success: true }));
 
 module.exports = router;
