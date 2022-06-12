@@ -5,7 +5,10 @@ const User = require("../models/User");
 const ChatRoomService = require("../services/ChatRoomService");
 const UserService = require("../services/UserService");
 const asyncCatcher = require("../utils/asyncCatcher");
-const duplicateChatroomChecker = require("../utils/duplicateChatroomChecker");
+const {
+  duplicateChatroomChecker,
+  filterOutUserFromAttendants,
+} = require("../utils/helpers");
 
 const UserInstance = new UserService(User);
 const ChatRoomInstance = new ChatRoomService(ChatRoom);
@@ -43,10 +46,7 @@ exports.getAllChatRooms = asyncCatcher(async (req, res, next) => {
 
   const { chatroom } = await UserInstance.GetAllChatRoomListOfUser(userId);
 
-  const filteredChatrooms = chatroom.map(
-    ({ attendants }) =>
-      attendants.filter((user) => user._id.toString() !== userId.toString())[0]
-  );
+  const filteredChatrooms = filterOutUserFromAttendants(chatroom, userId);
 
   res.json({
     success: true,
