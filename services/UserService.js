@@ -69,6 +69,13 @@ class UserService {
 
     return populatedProfile;
   };
+
+  AddChatRoomIdToAttendants = async (attendants, roomId) => {
+    await this.userModel.updateMany(
+      { _id: { $in: attendants } },
+      { $addToSet: { chatroom: roomId } }
+    );
+  };
 }
 
 module.exports = UserService;

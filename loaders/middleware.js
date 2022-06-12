@@ -6,6 +6,7 @@ const checkJWT = require("../middlewares/checkJWT");
 const authRouter = require("../routes/auth");
 const userRouter = require("../routes/user");
 const indexRouter = require("../routes/index");
+const chatRouter = require("../routes/chat");
 const errorHandler = require("../middlewares/errorHandler");
 
 const initiateMiddlewares = (app) => {
@@ -32,6 +33,7 @@ const initiateMiddlewares = (app) => {
   app.use("/", indexRouter);
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
+  app.use("/chat", chatRouter);
 
   app.use(errorHandler);
 };
