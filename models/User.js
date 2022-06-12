@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema({
   },
   chatroom: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Chatroom",
+    ref: "ChatRoom",
   },
   incomingCoffeeRequest: {
     type: [mongoose.Schema.Types.ObjectId],
