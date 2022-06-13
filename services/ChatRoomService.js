@@ -10,6 +10,13 @@ class ChatRoomService {
 
   GetChatHistory = async (roomId) =>
     await this.chatRoomModel.findById(roomId).select("chats");
+
+  SaveChats = async (roomId, chat) => {
+    await this.chatRoomModel.updateOne(
+      { _id: roomId },
+      { $push: { chats: chat } }
+    );
+  };
 }
 
 module.exports = ChatRoomService;
