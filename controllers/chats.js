@@ -68,7 +68,5 @@ exports.visitChatRoom = asyncCatcher(async (req, res, next) => {
     return next(new ErrorResponse("unauthorized"));
   }
 
-  const { chats } = await ChatRoomInstance.GetChatHistory(roomId);
-
-  res.json({ success: true, chats });
+  res.json({ success: true });
 });
