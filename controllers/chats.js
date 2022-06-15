@@ -39,7 +39,7 @@ exports.createChatroom = asyncCatcher(async (req, res, next) => {
 
   await UserInstance.AddChatRoomIdToAttendants(attendants, chatRoom._id);
 
-  res.json({ success: true, roomId: chatRoom._id });
+  res.json({ success: true, roomId: chatRoom._id, attendants });
 });
 
 exports.getAllChatRooms = asyncCatcher(async (req, res, next) => {
@@ -68,5 +68,7 @@ exports.visitChatRoom = asyncCatcher(async (req, res, next) => {
     return next(new ErrorResponse("unauthorized"));
   }
 
-  res.json({ success: true });
+  const { attendants } = await ChatRoomInstance.GetAttendants(roomId);
+
+  res.json({ success: true, attendants });
 });

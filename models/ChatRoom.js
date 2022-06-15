@@ -7,9 +7,8 @@ const ChatSchema = new mongoose.Schema({
     ref: "User",
   },
   text: String,
+  createdAt: Number,
 });
-
-ChatSchema.set("timestamps", true);
 
 const ChatRoomSchema = new mongoose.Schema({
   attendants: {
@@ -18,16 +17,6 @@ const ChatRoomSchema = new mongoose.Schema({
     ref: "User",
   },
   chats: [ChatSchema],
-});
-
-ChatRoomSchema.virtual("lastChat").get(function () {
-  const lastIndex = this.chats.length - 1;
-
-  return this.chats[lastIndex];
-});
-
-ChatRoomSchema.virtual("count").get(function () {
-  return this.chats.length;
 });
 
 module.exports = mongoose.model("ChatRoom", ChatRoomSchema);

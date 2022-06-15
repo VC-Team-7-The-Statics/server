@@ -1,40 +1,46 @@
 const { Server } = require("socket.io");
 const ChatRoom = require("../models/ChatRoom");
 const ChatRoomService = require("../services/ChatRoomService");
+const redis = require("../config/redis");
 
-const ChatRoomInstance = new ChatRoomService(ChatRoom);
+const ChatRoomInstance = new ChatRoomService(ChatRoom, redis);
 
 const initiateSocketIO = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:3002",
-      ],
+      origin: "*",
       methods: ["GET", "POST"],
     },
   });
 
   io.on("connection", (socket) => {
     socket.on("joinRoom", async (roomId) => {
-      const { chats } = await ChatRoomInstance.GetChatHistory(roomId).catch(
-        () => {
-          socket.to(roomId).emit("error", "채팅 기록을 불러오지 못했습니다.");
-        }
-      );
       socket.join(roomId);
 
-      socket.to(roomId).emit("joinedRoom", chats);
+      const { chats } = await ChatRoomInstance.GetChatHistory(roomId).catch(
+        () => {
+          io.to(roomId).emit("error", "채팅 기록을 불러오지 못했습니다.");
+        }
+      );
 
-      socket.on("chat", async (chat) => {
-        await ChatRoomInstance.SaveChats(roomId, chat).catch(() => {
-          socket.to(roomId).emit("error", "채팅을 저장하지 못했습니다.");
-        });
+      io.to(roomId).emit("joinedRoom", chats);
 
-        socket.broadcast.to(roomId).emit("chat-broadcast", chat);
-      });
+      socket.on("chat", handleChat(socket, roomId));
+
+      socket.on("disconnect", handleDisconnection(io, roomId));
     });
+  });
+};
+
+const handleChat = (socket, roomId) => async (chat) => {
+  await ChatRoomInstance.SaveChatInRedis(roomId, chat);
+
+  socket.broadcast.to(roomId).emit("chat-broadcast", chat);
+};
+
+const handleDisconnection = (io, roomId) => async () => {
+  await ChatRoomInstance.MigrateChatsFromRedisToMongoDB(roomId).catch(() => {
+    io.to(roomId).emit("error", "채팅을 저장하지 못했습니다.");
   });
 };
 
