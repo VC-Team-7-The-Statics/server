@@ -69,3 +69,11 @@ exports.getProfileInfo = asyncCatcher(async (req, res, next) => {
 
   res.json({ success: true, profile: populatedProfile });
 });
+
+exports.getUserChatInfo = asyncCatcher(async (req, res, next) => {
+  const { userId } = req.params;
+
+  const userChatInfo = await User.findById(userId).select("name image");
+
+  res.json({ success: true, user: userChatInfo });
+});
