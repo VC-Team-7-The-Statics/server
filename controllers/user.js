@@ -32,7 +32,8 @@ exports.recommendUser = asyncCatcher(async (req, res, next) => {
   const { users, totalMatchingUsers } =
     await UserInstance.RecommendMatchingUsers(query, usersPerRequest, page);
 
-  const isLastPage = page + 1 === totalMatchingUsers;
+  const isLastPage =
+    (page === 0 && totalMatchingUsers === 0) || page + 1 === totalMatchingUsers;
 
   res.json({ success: true, recommendation: users, page, isLastPage });
 });
@@ -67,4 +68,12 @@ exports.getProfileInfo = asyncCatcher(async (req, res, next) => {
   const populatedProfile = await UserInstance.GetPopulatedProfile({ email });
 
   res.json({ success: true, profile: populatedProfile });
+});
+
+exports.getUserChatInfo = asyncCatcher(async (req, res, next) => {
+  const { userId } = req.params;
+
+  const userChatInfo = await User.findById(userId).select("name image");
+
+  res.json({ success: true, user: userChatInfo });
 });

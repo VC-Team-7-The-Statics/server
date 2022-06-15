@@ -7,20 +7,16 @@ const ChatSchema = new mongoose.Schema({
     ref: "User",
   },
   text: String,
+  createdAt: Number,
 });
-
-ChatSchema.set("timestamps", true);
 
 const ChatRoomSchema = new mongoose.Schema({
   attendants: {
     type: [mongoose.Schema.Types.ObjectId],
     required: [true, "참가자는 두 명이어야 합니다."],
+    ref: "User",
   },
   chats: [ChatSchema],
-  count: {
-    type: Number,
-    default: 0,
-  },
 });
 
 module.exports = mongoose.model("ChatRoom", ChatRoomSchema);
