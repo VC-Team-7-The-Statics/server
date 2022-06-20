@@ -1,11 +1,12 @@
 const Joi = require("joi");
+const { VALIDATION_ERROR } = require("../constants/errorConstants");
 const ErrorResponse = require("../utils/ErrorResponse");
 
 exports.validate = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body);
 
   if (error) {
-    return next(new ErrorResponse("validation error"));
+    return next(new ErrorResponse(VALIDATION_ERROR));
   }
 
   next();
