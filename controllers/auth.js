@@ -6,6 +6,11 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const UserService = require("../services/UserService");
 const User = require("../models/User");
 const secrets = require("../config/secrets");
+const {
+  UNAUTHORIZED,
+  WRONG_PASSWORD,
+  INVALID_TOKEN,
+} = require("../constants/errorConstants");
 
 const UserInstance = new UserService(User);
 
@@ -22,11 +27,11 @@ exports.logIn = asyncCatcher(async (req, res, next) => {
 
     const user = await UserInstance.FindUserWithPassword({ email });
 
-    if (!user) return next(new ErrorResponse("unauthorized"));
+    if (!user) return next(new ErrorResponse(UNAUTHORIZED));
 
     const isPasswordCorrect = await user.matchPassword(password);
 
-    if (!isPasswordCorrect) return next(new ErrorResponse("wrong password"));
+    if (!isPasswordCorrect) return next(new ErrorResponse(WRONG_PASSWORD));
 
     const token = await generateJWT(user.email);
 
@@ -34,7 +39,7 @@ exports.logIn = asyncCatcher(async (req, res, next) => {
   }
 
   if (!req.user) {
-    return next(new ErrorResponse("invalid token"));
+    return next(new ErrorResponse(INVALID_TOKEN));
   }
 
   const token = await generateJWT(req.user.email);
