@@ -15,7 +15,7 @@ class ChatRoomService {
   MigrateChatsFromRedisToMongoDB = async (roomId) => {
     const chats = await this.redisClient.lrange(roomId, 0, -1);
 
-    const parsedChats = chats.map((chat) => JSON.parse(chat));
+    const parsedChats = chats.map(JSON.parse);
 
     await this.chatRoomModel.updateMany(
       { _id: roomId },

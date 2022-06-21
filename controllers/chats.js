@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 const { default: mongoose } = require("mongoose");
+const { UNAUTHORIZED } = require("../constants/errorConstants");
 const ChatRoom = require("../models/ChatRoom");
 const User = require("../models/User");
 const ChatRoomService = require("../services/ChatRoomService");
@@ -65,7 +66,7 @@ exports.visitChatRoom = asyncCatcher(async (req, res, next) => {
     !mongoose.Types.ObjectId.isValid(userId) ||
     !mongoose.Types.ObjectId.isValid(roomId)
   ) {
-    return next(new ErrorResponse("unauthorized"));
+    return next(new ErrorResponse(UNAUTHORIZED));
   }
 
   const { attendants } = await ChatRoomInstance.GetAttendants(roomId);
